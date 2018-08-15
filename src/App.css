@@ -1,0 +1,53 @@
+html,
+body {
+  height: 100vh;
+  width: 100%;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.navbar-brand {
+  font-family: 'Cuprum', sans-serif !important;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.img-cards:hover {
+  -webkit-transition: all .2s ease-out;
+  transition: all .2s ease-out;
+  -webkit-box-shadow: 0 2px 43px -4px rgba(0, 0, 0, .19);
+  box-shadow: 0 2px 43px -4px rgba(0, 0, 0, .19);
+}
