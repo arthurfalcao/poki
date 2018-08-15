@@ -1,6 +1,7 @@
+import Rebase from 're-base';
+import firebase from 'firebase';
 
-  // Initialize Firebase
-export const DB_CONFIG = {
+const config = {
     apiKey: "AIzaSyAkTi2kvcR_5T8EXJZ7LjA9rYiTsYeT8Dg",
     authDomain: "poki-18d0c.firebaseapp.com",
     databaseURL: "https://poki-18d0c.firebaseio.com",
@@ -9,3 +10,8 @@ export const DB_CONFIG = {
     messagingSenderId: "688715105666"
 };
   
+const app = firebase.initializeApp(config);
+const base = Rebase.createClass(app.database());
+const facebookProvider = new firebase.auth.FacebookAuthProvider();
+
+export { app, base, facebookProvider }

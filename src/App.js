@@ -4,7 +4,7 @@ import Menu from './components/shared/Menu';
 import Footer from './components/shared/Footer';
 
 import { Link } from 'react-router-dom';
-import { DB_CONFIG } from './config/config';
+
 import firebase from 'firebase/app';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -50,19 +50,7 @@ class App extends Component {
           </div>
         </section>
 
-        <section>
-          <div className="container">
-            <div className="row">
-            
-            </div>
-            <div className="row justify-content-center">
-              <div className="col-10 col-sm-10 col-lg-11">
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="container pt-5">
+        <section className="container py-5">
           <div className="row justify-content-center">
             <div className="col-12 text-center">
               <h1>Cartas</h1>

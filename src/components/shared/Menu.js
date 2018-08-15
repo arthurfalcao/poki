@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { app, base } from './config/config';
 
 class Menu extends Component {
     constructor(props) {
@@ -8,6 +9,24 @@ class Menu extends Component {
         this.state = {
             authenticated: false
         }
+    }
+
+    componentWillMount() {
+        this.removeAuthListener = app.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.setState({
+                    authenticated: true
+                })
+            } else {
+                this.setState({
+                    authenticated: false
+                })
+            }
+        })
+    }
+
+    componentWillUnmount() {
+        this.removeAuthListener();
     }
 
     render() {

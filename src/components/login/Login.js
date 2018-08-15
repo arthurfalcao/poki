@@ -7,6 +7,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAt, faLock } from '@fortawesome/free-solid-svg-icons'
+import { Redirect } from 'react-router-dom';
+import { Toaster, Intent } from '@blueprintjs/core';
+
+import { app, facebookProvider } from '../../config/config';
 
 library.add(faAt, faLock)
 
@@ -16,10 +20,21 @@ class Login extends Component {
 
     this.authWithFacebook = this.authWithFacebook.bind(this);
     this.authWithEmailPassword = this.authWithEmailPassword.bind(this);
+
+    this.state = {
+      redirect: false
+    }
   }
 
   authWithFacebook() {
-
+    app.auth().signInWithPopup(facebookProvider)
+      .then((result, error) => {
+        if (error) {
+          this.toaster.show({ intent: Intent.DANGER, message: "Unable to sign in with Facebook" })
+        } else {
+          this.setState({ redirect: true });
+        }
+      })
   }
 
   authWithEmailPassword(event) {
@@ -32,10 +47,15 @@ class Login extends Component {
   }
 
   render() {
+    if (this.state.redirect === true) {
+      return <Redirect to ='/' />
+    }
+
     return (
       <div>
         <Menu></Menu>
         <section className="container pt-5">
+          <Toaster ref={(element) => { this.toaster = element }} />
           <div className="row justify-content-center">
             <div className="col-12 col-sm-8 text-center"> 
               <h1 className="text-info">Poki</h1>
