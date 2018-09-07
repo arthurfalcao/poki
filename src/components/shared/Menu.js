@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { app, base } from './config/config';
+import { app, base } from '../../config/config';
 
 class Menu extends Component {
     constructor(props) {

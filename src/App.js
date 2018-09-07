@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 
+import Deck from "./components/decks/Deck";
 import Menu from './components/shared/Menu';
 import Footer from './components/shared/Footer';
 
 import { Link } from 'react-router-dom';
 
+import uuid from 'uuid';
+
 import firebase from 'firebase/app';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API = 'https://api.pokemontcg.io/v1/cards';
+const API = 'https://api.pokemontcg.io/v1/cards?pageSize=12';
 
 class App extends Component {
   constructor(props) {
@@ -20,6 +23,7 @@ class App extends Component {
 
     this.state = {
       cards: [],
+      deck: [],
     };
   }
 
@@ -35,8 +39,29 @@ class App extends Component {
       });
   }
 
+  addToDeck = (id, name) => {
+    this.setState({
+      deck: this.state.deck.concat([{
+        idCard: uuid.v4(),
+        id: id,
+        name: name,
+      }])
+    });
+  }
+
+  deleteFromDeck = (id, e) => {
+    // evita editar
+    e.stopPropagation();
+    
+    this.setState({
+      deck: this.state.deck.filter(
+        card => card.idCard !== id
+      )
+    })
+  }
+
   render() {
-    const { cards } = this.state;
+    const { cards, deck } = this.state;
 
     return (
       <div>
@@ -50,24 +75,31 @@ class App extends Component {
           </div>
         </section>
 
-        <section className="container py-5">
+        <section className="container-fluid py-5">
           <div className="row justify-content-center">
             <div className="col-12 text-center">
               <h1>Cartas</h1>
             </div>
           </div>
-          <div className="row justify-content-center">
-            {
-              cards.map(card =>
-                  <div className="col-3 pt-5 text-center" key={card.id}>
-                    <Link to={"card/"+card.id}>
-                      <img className="img-fluid img-cards" alt={card.name} src={card.imageUrl}/>
-                    </Link>
-                    <h6 className="mt-2">{card.name} <span className="badge badge-danger">{card.supertype}</span> </h6>
-                  </div>
-                )
-              }
+          <div className="row justify-content-end">
+            <div className="col-6">
+              <div className="row justify-content-center">
+                {
+                  cards.map(card =>
+                    <div className="col-6 col-sm-4 col-lg-3 pt-5 text-center" key={card.id}>
+                      <div onClick={() => {this.addToDeck(card.id, card.name)}}>
+                        <img className="img-fluid img-cards" alt={card.name} src={card.imageUrl}/>
+                      </div>
+                      <h6 className="mt-2">{card.name} <span className="badge badge-danger">{card.supertype}</span> </h6>
+                    </div>
+                  )
+                }
+              </div>
             </div>
+            <div className="col-2 offset-1">
+              <Deck deck={deck} onDelete={this.deleteFromDeck}/>
+            </div>
+          </div>
         </section>
         <Footer />
       </div>

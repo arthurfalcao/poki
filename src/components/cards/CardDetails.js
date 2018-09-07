@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Menu from "../shared/Menu";
 
+import './cardDetails.css';
+
 class CardDetails extends Component {
   constructor(props) {
     super(props);
@@ -8,8 +10,6 @@ class CardDetails extends Component {
     this.state = {
         cards: [],
     }
-    this.name = props.name;
-    this.image = props.image;
     this.id = props.match.params.id;
   }
 
@@ -26,6 +26,10 @@ class CardDetails extends Component {
   }
 
   render() {
+    const deckImage = {
+      backgroundImage: 'url('+ this.state.cards.imageUrl + ')'
+    };
+
     return (
       <div>
           <Menu />
@@ -41,6 +45,11 @@ class CardDetails extends Component {
                 </div>
             </div>
           </section>
+          <section className="container">
+            
+          </section>
+          <div className="center-cropped" style={ deckImage }>
+          </div>
       </div>
     );
   }
