@@ -1,33 +1,36 @@
-import React, { Component } from "react";
+import React from "react";
 // import PropTypes from "prop-types";
 
-// class Card extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.name = props.name;
-//     this.image = props.image;
-//     this.id = props.id;
-//   }
+class Card extends React.Component {
 
-//   render() {
-//     return (
-//       <div >
-//           <p>{this.name}</p>
-//           <img src={this.image}/>
-//       </div>
-//     );
-//   }
-// }
+  render() {
+    return (
+      <div className="col-6 col-sm-4 col-lg-3 pt-5 text-center" key={ this.props.id }>
+        <div onClick={() => this.props.addToDeck(this.props.id, this.props.name, this.props.type)} className="card-click">
+          <img className="img-fluid img-cards" alt={ this.props.name } src={ this.props.image } />
+        </div>
+        <h6 className="mt-2">{ this.props.name } <span className="badge badge-danger">{ this.props.superType }</span> </h6>
+      </div>
+    );
+  }
+}
 
 // Card.propTypes = {
 //   name: PropTypes.string,
 //   image: PropTypes.string
 // };
 
+export default Card;
+
+// const Card = ({ addToDeck }) => {
+//   return(
+//     <div className="col-6 col-sm-4 col-lg-3 pt-5 text-center" key={this.props.id}>
+//       <div onClick={() => addToDeck(this.props.id, this.props.name, this.props.type)}>
+//         <img className="img-fluid img-cards" alt={this.props.name} src={ this.props.image }/>
+//       </div>
+//       <h6 className="mt-2">{ this.props.name } <span className="badge badge-danger">{ this.props.superType }</span> </h6>
+//     </div>
+//   )
+// }
+
 // export default Card;
-
-const Card = (props) => {
-  return(
-
-  )
-}

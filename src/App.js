@@ -1,20 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import Deck from "./components/decks/Deck";
+import Card from "./components/cards/Card";
 import Menu from './components/shared/Menu';
 import Footer from './components/shared/Footer';
 
-import { Link } from 'react-router-dom';
-
 import uuid from 'uuid';
 
-import firebase from 'firebase/app';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const API = 'https://api.pokemontcg.io/v1/cards?pageSize=12';
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
 
@@ -39,12 +37,13 @@ class App extends Component {
       });
   }
 
-  addToDeck = (id, name) => {
+  addToDeck = (id, name, type) => {
     this.setState({
       deck: this.state.deck.concat([{
         idCard: uuid.v4(),
         id: id,
         name: name,
+        type: type
       }])
     });
   }
@@ -65,7 +64,7 @@ class App extends Component {
 
     return (
       <div>
-        <Menu></Menu>
+        <Menu />
         <section className="container-fluid bg-dark">
           <div className="row justify-content-center">
             <div className="col-12 col-sm-6 col-lg-4 text-center text-white py-5">
@@ -86,18 +85,13 @@ class App extends Component {
               <div className="row justify-content-center">
                 {
                   cards.map(card =>
-                    <div className="col-6 col-sm-4 col-lg-3 pt-5 text-center" key={card.id}>
-                      <div onClick={() => {this.addToDeck(card.id, card.name)}}>
-                        <img className="img-fluid img-cards" alt={card.name} src={card.imageUrl}/>
-                      </div>
-                      <h6 className="mt-2">{card.name} <span className="badge badge-danger">{card.supertype}</span> </h6>
-                    </div>
+                    <Card id={ card.id } name={ card.name } image={ card.imageUrl } superType={ card.supertype } addToDeck={ this.addToDeck } type={ card.types } />
                   )
                 }
               </div>
             </div>
             <div className="col-2 offset-1">
-              <Deck deck={deck} onDelete={this.deleteFromDeck}/>
+              <Deck deck={deck} deleteFromDeck={this.deleteFromDeck} />
             </div>
           </div>
         </section>
@@ -106,5 +100,63 @@ class App extends Component {
     );
   }
 }
+
+const types = [
+  {
+    name: 'Grass',
+    button: 'btn-grass',
+    icon: '//cdn.bulbagarden.net/upload/thumb/2/2e/Grass-attack.png/20px-Grass-attack.png'
+  },
+  {
+    name: 'Fire',
+    button: 'btn-fire',
+    icon: '//cdn.bulbagarden.net/upload/thumb/a/ad/Fire-attack.png/20px-Fire-attack.png'
+  },
+  {
+    name: 'Water',
+    button: 'btn-water',
+    icon: '//cdn.bulbagarden.net/upload/thumb/1/11/Water-attack.png/20px-Water-attack.png'
+  },
+  {
+    name: 'Lightning',
+    button: 'btn-lightning',
+    icon: '//cdn.bulbagarden.net/upload/thumb/0/04/Lightning-attack.png/20px-Lightning-attack.png'
+  },
+  {
+    name: 'Fighting',
+    button: 'btn-fighting',
+    icon: '//cdn.bulbagarden.net/upload/thumb/4/48/Fighting-attack.png/20px-Fighting-attack.png'
+  },
+  {
+    name: 'Pyschic',
+    button: 'btn-pyschic',
+    icon: '//cdn.bulbagarden.net/upload/thumb/e/ef/Psychic-attack.png/20px-Psychic-attack.png'
+  },
+  {
+    name: 'Colorless',
+    button: 'btn-colorless',
+    icon: '//cdn.bulbagarden.net/upload/thumb/1/1d/Colorless-attack.png/20px-Colorless-attack.png'
+  },
+  {
+    name: 'Darkness',
+    button: 'btn-darkness',
+    icon: '//cdn.bulbagarden.net/upload/thumb/a/ab/Darkness-attack.png/20px-Darkness-attack.png'
+  },
+  {
+    name: 'Metal',
+    button: 'btn-metal',
+    icon: '//cdn.bulbagarden.net/upload/thumb/6/64/Metal-attack.png/20px-Metal-attack.png'
+  },
+  {
+    name: 'Dragon',
+    button: 'btn-dragon',
+    icon: '//cdn.bulbagarden.net/upload/thumb/8/8a/Dragon-attack.png/20px-Dragon-attack.png'
+  },
+  {
+    name: 'Fairy',
+    button: 'btn-fairy',
+    icon: '//cdn.bulbagarden.net/upload/thumb/4/40/Fairy-attack.png/20px-Fairy-attack.png'
+  },
+];
 
 export default App;

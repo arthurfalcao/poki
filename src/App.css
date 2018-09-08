@@ -12,6 +12,10 @@ body {
   font-family: 'Cuprum', sans-serif !important;
 }
 
+.card-click {
+  cursor: pointer;
+}
+
 .App {
   text-align: center;
 }
