@@ -2,7 +2,7 @@ import React from "react";
 
 import './Deck.css';
 import DeckCard from "./DeckCard";
-import DeckTtile from "./DeckTtile";
+import DeckTitle from "./DeckTitle";
 
 // export default ({deck, deleteFromDeck=() => {}}) => (
 //   <div className="card">
@@ -30,12 +30,12 @@ class Deck extends React.Component {
     return (
       <div className="card">
         <div className="card-header text-center">
-          <DeckTtile value="My Deck" />
+          <DeckTitle value={ deck.name } />
         </div>
         <div className="card-body p-0">
           <div className="list-group">
             {
-              deck.map(card =>
+              deck.cards.map(card =>
                 <DeckCard { ...card }
                           deleteFromDeck={ deleteFromDeck.bind(null, card.idCard) } />
                   // <button key={ card.idCard } 
@@ -49,6 +49,9 @@ class Deck extends React.Component {
               )
             }
           </div>
+        </div>
+        <div className="card-footer">
+          <button className="btn btn-primary btn-block">Salvar</button>
         </div>
       </div>
     );

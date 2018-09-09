@@ -21,66 +21,116 @@ class App extends React.Component {
 
     this.state = {
       cards: [],
-      deck: [],
+      deck: {
+          idDeck: uuid.v4(),
+          name: 'My Deck',
+          cards: []
+        },
+      showDeck: false,
+      oush: {
+        idDeck: uuid.v4(),
+        name: 'My Deck',
+        cards: []
+      },
     };
   }
 
+  // componentWillMount() {
+  //   localStorage.getItem('deckTemp') && this.setState({
+  //     deck: JSON.parse(localStorage.getItem('deckTemp'))
+  //   })
+  // }
+  
   componentDidMount() {
+    this.fetchCards();
+    console.log(this.state.oush.name);
+    
+  }
+
+  fetchCards() {
     fetch(API)
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         this.setState({ cards: data.cards })
       })
       .catch(err => {
         console.log(err);
       });
   }
+  
+  componentWillUpdate = (nextProps, nextState) => {
+    localStorage.setItem('deckTemp', JSON.stringify(nextState.deck));
+    localStorage.setItem('deckDate', Date.now());
+  }
 
   addToDeck = (id, name, type, superType) => {
     if (superType == "Pokémon") {
       types.forEach(types => {
         if (types.name == type) {
-          this.setState({
-            deck: this.state.deck.concat([{
-              idCard: uuid.v4(),
-              id: id,
-              name: name,
-              superType: superType,
-              type: types.type,
-              icon: types.icon,
-              button: types.button,
-              hasIcon: true
-            }])
-          });
+          this.setState(prevState => ({
+            ...prevState,
+            deck: {
+              ...prevState.deck,
+              cards: this.state.deck.cards.concat([{
+                idCard: uuid.v4(),
+                id: id,
+                name: name,
+                superType: superType,
+                type: types.type,
+                icon: types.icon,
+                button: types.button,
+                hasIcon: true
+              }])
+            }
+          })
+          )
         }
-      });
+      })
     } else {
-      this.setState({
-        deck: this.state.deck.concat([{
-          idCard: uuid.v4(),
-          id: id,
-          name: name,
-          superType: superType,
-          hasIcon: false
-        }])
-      });
+      this.setState(prevState => ({
+        ...prevState,
+        deck: {
+          ...prevState.deck,
+          cards: this.state.deck.cards.concat([{
+            idCard: uuid.v4(),
+            id: id,
+            name: name,
+            superType: superType,
+            hasIcon: false
+          }])
+        }
+      })
+      )
     }
+    this.setState({
+      showDeck: true
+    });
   }
 
   deleteFromDeck = (id, e) => {
     // evita editar
     e.stopPropagation();
     
-    this.setState({
-      deck: this.state.deck.filter(
-        card => card.idCard !== id
-      )
+    this.setState(prevState => ({
+      ...prevState,
+      deck: {
+        ...prevState.deck,
+        cards: this.state.deck.cards.filter(
+          card => card.idCard !== id
+        )
+      }
     })
+    )
+
+    if (!localStorage.getItem('deckTemp')) {
+      this.setState({
+        showDeck: false
+      })
+    }
   }
 
   render() {
-    const { cards, deck } = this.state;
+    const { cards, deck, showDeck } = this.state;
 
     return (
       <div>
@@ -111,7 +161,10 @@ class App extends React.Component {
               </div>
             </div>
             <div className="col-2 offset-1">
-              <Deck deck={ deck } deleteFromDeck={ this.deleteFromDeck } />
+              {
+                showDeck &&
+                <Deck deck={ deck } deleteFromDeck={ this.deleteFromDeck } />
+              }
             </div>
           </div>
         </section>
