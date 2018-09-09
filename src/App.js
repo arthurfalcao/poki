@@ -10,7 +10,7 @@ import uuid from 'uuid';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API = 'https://api.pokemontcg.io/v1/cards?pageSize=12';
+const API = 'https://api.pokemontcg.io/v1/cards?pageSize=24';
 
 class App extends React.Component {
   constructor(props) {
@@ -37,15 +37,35 @@ class App extends React.Component {
       });
   }
 
-  addToDeck = (id, name, type) => {
-    this.setState({
-      deck: this.state.deck.concat([{
-        idCard: uuid.v4(),
-        id: id,
-        name: name,
-        type: type
-      }])
-    });
+  addToDeck = (id, name, type, superType) => {
+    if (superType == "Pokémon") {
+      types.forEach(types => {
+        if (types.name == type) {
+          this.setState({
+            deck: this.state.deck.concat([{
+              idCard: uuid.v4(),
+              id: id,
+              name: name,
+              superType: superType,
+              type: types.type,
+              icon: types.icon,
+              button: types.button,
+              hasIcon: true
+            }])
+          });
+        }
+      });
+    } else {
+      this.setState({
+        deck: this.state.deck.concat([{
+          idCard: uuid.v4(),
+          id: id,
+          name: name,
+          superType: superType,
+          hasIcon: false
+        }])
+      });
+    }
   }
 
   deleteFromDeck = (id, e) => {
@@ -85,13 +105,13 @@ class App extends React.Component {
               <div className="row justify-content-center">
                 {
                   cards.map(card =>
-                    <Card id={ card.id } name={ card.name } image={ card.imageUrl } superType={ card.supertype } addToDeck={ this.addToDeck } type={ card.types } />
+                    <Card addToDeck={ this.addToDeck } { ...card } />
                   )
                 }
               </div>
             </div>
             <div className="col-2 offset-1">
-              <Deck deck={deck} deleteFromDeck={this.deleteFromDeck} />
+              <Deck deck={ deck } deleteFromDeck={ this.deleteFromDeck } />
             </div>
           </div>
         </section>
@@ -128,8 +148,8 @@ const types = [
     icon: '//cdn.bulbagarden.net/upload/thumb/4/48/Fighting-attack.png/20px-Fighting-attack.png'
   },
   {
-    name: 'Pyschic',
-    button: 'btn-pyschic',
+    name: 'Psychic',
+    button: 'btn-psychic',
     icon: '//cdn.bulbagarden.net/upload/thumb/e/ef/Psychic-attack.png/20px-Psychic-attack.png'
   },
   {
