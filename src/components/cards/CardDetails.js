@@ -8,7 +8,7 @@ class CardDetails extends Component {
     super(props);
 
     this.state = {
-        cards: [],
+        card: [],
     }
     this.id = props.match.params.id;
   }
@@ -17,39 +17,46 @@ class CardDetails extends Component {
     fetch('https://api.pokemontcg.io/v1/cards/'+this.id)
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        this.setState({ cards: data.card })
+        this.setState({ card: data.card })
       })
       .catch(error => {
         console.log(error);
-      });
+      }
+    );  
   }
+    
 
   render() {
-    const deckImage = {
-      backgroundImage: 'url('+ this.state.cards.imageUrl + ')'
-    };
+    const { card } = this.state;
 
     return (
       <div>
-          <Menu />
-          <section className="container py-5 bg-white">
-            <div className="row justify-content-center">
-                <div className="col-4 text-center">
-                    <img src={this.state.cards.imageUrlHiRes} alt={this.state.cards.name} className="img-fluid"/>
-                </div>
-                <div className="col-4 text-center">
-                    <h2 className="bg-secondary p-3 text-white rounded-top mb-0">{this.state.cards.name}</h2>
-                    <h4 className="bg-light p-3 rounded-bottom">{this.state.cards.supertype} - {this.state.cards.subtype}</h4>
-                    <button className="btn btn-info mt-3">Adicionar ao Deck</button>
-                </div>
+        <Menu />
+        <section className="container py-5 bg-white">
+          <div className="row justify-content-center">
+            <div className="col-12 col-lg-4 text-center">
+                <img src={ card.imageUrlHiRes } alt={ card.name } className="img-fluid"/>
             </div>
-          </section>
-          <section className="container">
-            
-          </section>
-          <div className="center-cropped" style={ deckImage }>
+            <div className="col-12 col-lg-6 text-center">
+              <ul className="list-group">
+                <li className="list-group-item bg-secondary">
+                  <h2 className="text-white rounded-top mb-0">{ card.name }</h2>
+                </li>
+                <li className="list-group-item bg-light">
+                  <h4 className="rounded-bottom mb-0">{ card.supertype } - { card.subtype }</h4>
+                </li>
+                {/* { 
+                  card.attacks.map(attack =>
+                    <li className="list-group">
+                      <h5>{ attack.name }</h5>
+                      <p>{ attack.text }</p>
+                    </li>
+                  )
+                } */}
+              </ul>
+            </div>
           </div>
+        </section>
       </div>
     );
   }

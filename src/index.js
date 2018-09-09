@@ -7,6 +7,7 @@ import registerServiceWorker from './registerServiceWorker';
 import Login from './components/login/Login';
 import CardDetails from './components/cards/CardDetails';
 import Register from './components/register/Register';
+import DeckDetails from './components/decks/DeckDetails';
 
 ReactDOM.render(
     <BrowserRouter>
@@ -15,6 +16,7 @@ ReactDOM.render(
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
             <Route path="/card/:id" component={CardDetails} />
+            <Route path="/deck/:id" component={DeckDetails} />
             <Route path="*" component={App} />
         </Switch>
     </BrowserRouter>,

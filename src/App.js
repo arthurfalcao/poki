@@ -24,27 +24,22 @@ class App extends React.Component {
       deck: {
           idDeck: uuid.v4(),
           name: 'My Deck',
-          cards: []
+          cards: [],
+          details: false
         },
-      showDeck: false,
-      oush: {
-        idDeck: uuid.v4(),
-        name: 'My Deck',
-        cards: []
-      },
+      showDeck: false
     };
   }
 
-  // componentWillMount() {
-  //   localStorage.getItem('deckTemp') && this.setState({
-  //     deck: JSON.parse(localStorage.getItem('deckTemp'))
-  //   })
-  // }
+  componentWillMount() {
+    localStorage.getItem('deck') && this.setState({
+      deck: JSON.parse(localStorage.getItem('deck')),
+      showDeck: true
+    })
+  }
   
   componentDidMount() {
     this.fetchCards();
-    console.log(this.state.oush.name);
-    
   }
 
   fetchCards() {
@@ -63,7 +58,11 @@ class App extends React.Component {
     localStorage.setItem('deckDate', Date.now());
   }
 
-  addToDeck = (id, name, type, superType) => {
+  onSave = () => {
+    localStorage.setItem('deck', JSON.stringify(this.state.deck));
+  }
+
+  addToDeck = (id, name, imageUrl, type, superType) => {
     if (superType == "Pokémon") {
       types.forEach(types => {
         if (types.name == type) {
@@ -75,6 +74,7 @@ class App extends React.Component {
                 idCard: uuid.v4(),
                 id: id,
                 name: name,
+                imageUrl: imageUrl, 
                 superType: superType,
                 type: types.type,
                 icon: types.icon,
@@ -95,6 +95,7 @@ class App extends React.Component {
             idCard: uuid.v4(),
             id: id,
             name: name,
+            imageUrl: imageUrl,
             superType: superType,
             hasIcon: false
           }])
@@ -130,7 +131,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { cards, deck, showDeck } = this.state;
+    const { cards, deck, showDeck, details } = this.state;
 
     return (
       <div>
@@ -148,6 +149,7 @@ class App extends React.Component {
           <div className="row justify-content-center">
             <div className="col-12 text-center">
               <h1>Cartas</h1>
+              <h6>Clique na carta para adicionar ao deck</h6>
             </div>
           </div>
           <div className="row justify-content-end">
@@ -163,7 +165,7 @@ class App extends React.Component {
             <div className="col-2 offset-1">
               {
                 showDeck &&
-                <Deck deck={ deck } deleteFromDeck={ this.deleteFromDeck } />
+                <Deck details={ details } deck={ deck } deleteFromDeck={ this.deleteFromDeck } onSave={ this.onSave } />
               }
             </div>
           </div>
