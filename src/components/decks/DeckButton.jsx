@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default ({ details, onSave, idDeck }) => {
+export default ({ details, onSave, idDeck, isSaved }) => {
   if (!details) {
-    return <DeckButton onSave={ onSave } idDeck={ idDeck } />
+    return <DeckButton onSave={ onSave } idDeck={ idDeck } isSaved={ isSaved } />
   }
 
   return (
@@ -11,11 +11,14 @@ export default ({ details, onSave, idDeck }) => {
   )
 }
 
-const DeckButton = ({ onSave=() => {}, idDeck }) => {
+const DeckButton = ({ onSave=() => {}, idDeck, isSaved }) => {
   return(
     <div className="btn-group" role="group">
       <button className="btn btn-info" onClick={ onSave }>Salvar</button>
-      <Link to={"deck/"+ idDeck } className="btn btn-danger">Detalhes</Link>
+      {
+        isSaved &&
+          <Link to={"deck/"+ idDeck } className="btn btn-danger">Detalhes</Link>
+      }
     </div>
   )
 }

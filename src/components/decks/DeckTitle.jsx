@@ -5,7 +5,7 @@ export default ({ editing, value, onEdit, ...props }) => {
         return <Edit value={ value } onEdit={ onEdit } { ...props } />;
     }
 
-    return <h6 className="mb-0" { ...props } >{ value }</h6>;
+    return <h6 className="mb-0" { ...props }>{ value }</h6>;
 }
 
 const Edit = ({ onEdit = () => {}, value, ...props }) => {

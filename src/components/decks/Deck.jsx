@@ -5,7 +5,7 @@ import DeckCard from "./DeckCard";
 import DeckTitle from "./DeckTitle";
 import DeckButton from "./DeckButton";
 
-const Deck = ({ deck, deleteFromDeck=() => {}, onSave=() => {}, details }) => (
+const Deck = ({ deck, deleteFromDeck=() => {}, onSave=() => {}, details, isSaved }) => (
   <div className="card">
     <div className="card-header text-center">
       <DeckTitle value={ deck.name } />
@@ -20,7 +20,7 @@ const Deck = ({ deck, deleteFromDeck=() => {}, onSave=() => {}, details }) => (
       </div>
     </div>
     <div className="card-footer text-center">
-      <DeckButton details={ details } idDeck={ deck.idDeck } onSave={ onSave } />
+      <DeckButton details={ details } idDeck={ deck.idDeck } onSave={ onSave } isSaved={ isSaved } />
     </div>
   </div>
 );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import Deck from "./components/decks/Deck";
 import Card from "./components/cards/Card";
@@ -10,7 +11,7 @@ import uuid from 'uuid';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API = 'https://api.pokemontcg.io/v1/cards?pageSize=24';
+const API = 'https://api.pokemontcg.io/v1/cards?pageSize=60';
 
 class App extends React.Component {
   constructor(props) {
@@ -21,21 +22,32 @@ class App extends React.Component {
 
     this.state = {
       cards: [],
-      deck: {
+      deck: [{
           idDeck: uuid.v4(),
           name: 'My Deck',
           cards: [],
           details: false
-        },
-      showDeck: false
+        }],
+      decks: [],
+      showDeck: false,
+      isSaved: false
     };
   }
 
   componentWillMount() {
     localStorage.getItem('deck') && this.setState({
       deck: JSON.parse(localStorage.getItem('deck')),
-      showDeck: true
-    })
+      decks: JSON.parse(localStorage.getItem('decks')),
+      showDeck: true,
+      isSaved: true
+    });
+    this.setState(prevState => ({
+      ...prevState,
+      deck: {
+        ...prevState.deck,
+        date: localStorage.getItem('deckDate')
+      }
+    }));
   }
   
   componentDidMount() {
@@ -46,7 +58,7 @@ class App extends React.Component {
     fetch(API)
       .then(response => response.json())
       .then(data => {
-        this.setState({ cards: data.cards })
+        this.setState({ cards: data.cards.sort(() => 0.5 - Math.random()) })
       })
       .catch(err => {
         console.log(err);
@@ -55,11 +67,23 @@ class App extends React.Component {
   
   componentWillUpdate = (nextProps, nextState) => {
     localStorage.setItem('deckTemp', JSON.stringify(nextState.deck));
-    localStorage.setItem('deckDate', Date.now());
+    localStorage.setItem('decks', JSON.stringify(nextState.decks));
+    localStorage.setItem('deckDate', Date().toString().split(' ').splice(1,3).join(' '));
   }
 
   onSave = () => {
     localStorage.setItem('deck', JSON.stringify(this.state.deck));
+    this.setState({
+      isSaved: true
+    });
+  }
+
+  addNewDeck = (deck) => {
+    this.setState({
+      decks: this.state.decks.concat([{
+        deck: deck
+      }])
+    })
   }
 
   addToDeck = (id, name, imageUrl, type, superType) => {
@@ -125,13 +149,14 @@ class App extends React.Component {
 
     if (!localStorage.getItem('deckTemp')) {
       this.setState({
-        showDeck: false
+        showDeck: false,
+        isSaved: false
       })
     }
   }
 
   render() {
-    const { cards, deck, showDeck, details } = this.state;
+    const { cards, deck, showDeck, details, isSaved } = this.state;
 
     return (
       <div>
@@ -141,6 +166,17 @@ class App extends React.Component {
             <div className="col-12 col-sm-6 col-lg-4 text-center text-white py-5">
               <h1>Poki</h1>
               <h3>Crie seu próprio deck ou veja os melhores!</h3>
+            </div>
+          </div>
+        </section>
+
+        <section className="container py-5">
+          <div className="row justify-content-center">
+            <div className="col-4 text-center">
+              <div className="btn-group" role="group">
+                <button onClick={() => this.addNewDeck(deck) } className="btn btn-primary">Criar novo Deck</button>
+                <Link to="/decks" className="btn btn-primary">Todos os Decks</Link>
+              </div>
             </div>
           </div>
         </section>
@@ -165,7 +201,15 @@ class App extends React.Component {
             <div className="col-2 offset-1">
               {
                 showDeck &&
-                <Deck details={ details } deck={ deck } deleteFromDeck={ this.deleteFromDeck } onSave={ this.onSave } />
+                <Deck 
+                  details={ details } 
+                  deck={ deck } 
+                  deleteFromDeck={ this.deleteFromDeck } 
+                  onSave={ this.onSave } 
+                  isSaved={ isSaved }
+                  onEdit={ this.onEdit }
+                  onDeckNameClick={ this.activateDeckNameEdit }
+                />
               }
             </div>
           </div>
