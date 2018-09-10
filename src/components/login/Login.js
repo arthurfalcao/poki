@@ -91,7 +91,7 @@ class Login extends Component {
                       </div>
                     </div>
                     <button type="submit" className="btn btn-danger">Entrar</button>
-                    <a href="#" className="float-right">Esqueceu a senha?</a>
+                    <a className="float-right">Esqueceu a senha?</a>
                     <hr/>
                     <div className="text-center">
                       <button className="btn btn-info" onClick={() => { this.authWithFacebook() }}>Entre com o Facebook</button>

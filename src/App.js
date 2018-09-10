@@ -1,51 +1,133 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 import Deck from "./components/decks/Deck";
+import Card from "./components/cards/Card";
 import Menu from './components/shared/Menu';
 import Footer from './components/shared/Footer';
 
-import { Link } from 'react-router-dom';
-
 import uuid from 'uuid';
 
-import firebase from 'firebase/app';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API = 'https://api.pokemontcg.io/v1/cards?pageSize=12';
+const API = 'https://api.pokemontcg.io/v1/cards?pageSize=60';
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
 
-    //this.app = firebase.initializeApp(DB_CONFIG);
-    //this.db = this.app.database().ref().child('cards');
-
     this.state = {
       cards: [],
-      deck: [],
+      deck: {
+          idDeck: uuid.v4(),
+          name: 'My Deck',
+          cards: [],
+          details: false
+        },
+      decks: [],
+      showDeck: false,
+      isSaved: false
     };
   }
 
+  componentWillMount() {
+    localStorage.getItem('deck') && this.setState({
+      deck: JSON.parse(localStorage.getItem('deck')),
+      decks: JSON.parse(localStorage.getItem('decks')),
+      showDeck: true,
+      isSaved: true
+    });
+    this.setState(prevState => ({
+      ...prevState,
+      deck: {
+        ...prevState.deck,
+        date: localStorage.getItem('deckDate')
+      }
+    }));
+  }
+  
   componentDidMount() {
+    this.fetchCards();
+  }
+
+  fetchCards() {
     fetch(API)
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        this.setState({ cards: data.cards })
+        this.setState({ cards: data.cards.sort(() => 0.5 - Math.random()) })
       })
       .catch(err => {
         console.log(err);
       });
   }
+  
+  componentWillUpdate = (nextProps, nextState) => {
+    localStorage.setItem('deckTemp', JSON.stringify(nextState.deck));
+    localStorage.setItem('deck', JSON.stringify(nextState.deck));
+    localStorage.setItem('decks', JSON.stringify(nextState.decks));
+    localStorage.setItem('deckDate', Date().toString().split(' ').splice(1,3).join(' '));
+  }
 
-  addToDeck = (id, name) => {
+  onSave = () => {
     this.setState({
-      deck: this.state.deck.concat([{
-        idCard: uuid.v4(),
-        id: id,
-        name: name,
-      }])
+      decks: this.state.decks.concat([
+        this.state.deck
+      ]),
+      isSaved: true,
+      deck: {
+        idDeck: uuid.v4(),
+        name: 'My New Deck',
+        cards: [],
+        details: false
+      },
+      showDeck: false
+    });
+  }
+  
+  addToDeck = (id, name, imageUrl, type, superType) => {
+    if (superType == "Pokémon") {
+      types.forEach(types => {
+        if (types.name == type) {
+          this.setState(prevState => ({
+            ...prevState,
+            deck: {
+              ...prevState.deck,
+              cards: this.state.deck.cards.concat([{
+                idCard: uuid.v4(),
+                id: id,
+                name: name,
+                imageUrl: imageUrl, 
+                superType: superType,
+                type: types.type,
+                icon: types.icon,
+                button: types.button,
+                hasIcon: true
+              }])
+            }
+          })
+          )
+        }
+      })
+    } else {
+      this.setState(prevState => ({
+        ...prevState,
+        deck: {
+          ...prevState.deck,
+          cards: this.state.deck.cards.concat([{
+            idCard: uuid.v4(),
+            id: id,
+            name: name,
+            imageUrl: imageUrl,
+            superType: superType,
+            hasIcon: false
+          }])
+        }
+      })
+      )
+    }
+    this.setState({
+      showDeck: true
     });
   }
 
@@ -53,19 +135,31 @@ class App extends Component {
     // evita editar
     e.stopPropagation();
     
-    this.setState({
-      deck: this.state.deck.filter(
-        card => card.idCard !== id
-      )
+    this.setState(prevState => ({
+      ...prevState,
+      deck: {
+        ...prevState.deck,
+        cards: this.state.deck.cards.filter(
+          card => card.idCard !== id
+        )
+      }
     })
+    )
+
+    if (!localStorage.getItem('deckTemp')) {
+      this.setState({
+        showDeck: false,
+        isSaved: false
+      })
+    }
   }
 
   render() {
-    const { cards, deck } = this.state;
+    const { cards, deck, showDeck, details, isSaved } = this.state;
 
     return (
       <div>
-        <Menu></Menu>
+        <Menu />
         <section className="container-fluid bg-dark">
           <div className="row justify-content-center">
             <div className="col-12 col-sm-6 col-lg-4 text-center text-white py-5">
@@ -75,10 +169,19 @@ class App extends Component {
           </div>
         </section>
 
+        <section className="container py-5">
+          <div className="row justify-content-center">
+            <div className="col-4 text-center">
+              <Link to="/decks" className="btn btn-primary">Todos os Decks</Link>
+            </div>
+          </div>
+        </section>
+
         <section className="container-fluid py-5">
           <div className="row justify-content-center">
             <div className="col-12 text-center">
               <h1>Cartas</h1>
+              <h6>Clique na carta para adicionar ao deck</h6>
             </div>
           </div>
           <div className="row justify-content-end">
@@ -86,18 +189,24 @@ class App extends Component {
               <div className="row justify-content-center">
                 {
                   cards.map(card =>
-                    <div className="col-6 col-sm-4 col-lg-3 pt-5 text-center" key={card.id}>
-                      <div onClick={() => {this.addToDeck(card.id, card.name)}}>
-                        <img className="img-fluid img-cards" alt={card.name} src={card.imageUrl}/>
-                      </div>
-                      <h6 className="mt-2">{card.name} <span className="badge badge-danger">{card.supertype}</span> </h6>
-                    </div>
+                    <Card addToDeck={ this.addToDeck } { ...card } />
                   )
                 }
               </div>
             </div>
-            <div className="col-2 offset-1">
-              <Deck deck={deck} onDelete={this.deleteFromDeck}/>
+            <div className="col-3">
+              {
+                showDeck &&
+                <Deck 
+                  details={ details } 
+                  deck={ deck } 
+                  deleteFromDeck={ this.deleteFromDeck } 
+                  onSave={ this.onSave } 
+                  isSaved={ isSaved }
+                  onEdit={ this.onEdit }
+                  onDeckNameClick={ this.activateDeckNameEdit }
+                />
+              }
             </div>
           </div>
         </section>
@@ -106,5 +215,63 @@ class App extends Component {
     );
   }
 }
+
+const types = [
+  {
+    name: 'Grass',
+    button: 'btn-grass',
+    icon: '//cdn.bulbagarden.net/upload/thumb/2/2e/Grass-attack.png/20px-Grass-attack.png'
+  },
+  {
+    name: 'Fire',
+    button: 'btn-fire',
+    icon: '//cdn.bulbagarden.net/upload/thumb/a/ad/Fire-attack.png/20px-Fire-attack.png'
+  },
+  {
+    name: 'Water',
+    button: 'btn-water',
+    icon: '//cdn.bulbagarden.net/upload/thumb/1/11/Water-attack.png/20px-Water-attack.png'
+  },
+  {
+    name: 'Lightning',
+    button: 'btn-lightning',
+    icon: '//cdn.bulbagarden.net/upload/thumb/0/04/Lightning-attack.png/20px-Lightning-attack.png'
+  },
+  {
+    name: 'Fighting',
+    button: 'btn-fighting',
+    icon: '//cdn.bulbagarden.net/upload/thumb/4/48/Fighting-attack.png/20px-Fighting-attack.png'
+  },
+  {
+    name: 'Psychic',
+    button: 'btn-psychic',
+    icon: '//cdn.bulbagarden.net/upload/thumb/e/ef/Psychic-attack.png/20px-Psychic-attack.png'
+  },
+  {
+    name: 'Colorless',
+    button: 'btn-colorless',
+    icon: '//cdn.bulbagarden.net/upload/thumb/1/1d/Colorless-attack.png/20px-Colorless-attack.png'
+  },
+  {
+    name: 'Darkness',
+    button: 'btn-darkness',
+    icon: '//cdn.bulbagarden.net/upload/thumb/a/ab/Darkness-attack.png/20px-Darkness-attack.png'
+  },
+  {
+    name: 'Metal',
+    button: 'btn-metal',
+    icon: '//cdn.bulbagarden.net/upload/thumb/6/64/Metal-attack.png/20px-Metal-attack.png'
+  },
+  {
+    name: 'Dragon',
+    button: 'btn-dragon',
+    icon: '//cdn.bulbagarden.net/upload/thumb/8/8a/Dragon-attack.png/20px-Dragon-attack.png'
+  },
+  {
+    name: 'Fairy',
+    button: 'btn-fairy',
+    icon: '//cdn.bulbagarden.net/upload/thumb/4/40/Fairy-attack.png/20px-Fairy-attack.png'
+  },
+];
 
 export default App;
