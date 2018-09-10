@@ -1,0 +1,76 @@
+.btn-grass {
+    color: #fff !important;
+    background-color: #7DB808 !important;
+    border-color: #7DB808 !important;
+    cursor: pointer;
+}
+
+.btn-fire {
+    color: #fff !important;
+    background-color: #E24242 !important;
+    border-color: #E24242 !important;
+    cursor: pointer;
+}
+
+.btn-water {
+    color: #fff !important;
+    background-color: #5BC7E5 !important;
+    border-color: #5BC7E5 !important;
+    cursor: pointer;
+}
+
+.btn-lightning {
+    color: #fff !important;
+    background-color: #FAB536 !important;
+    border-color: #FAB536 !important;
+    cursor: pointer;
+}
+
+.btn-fighting {
+    color: #fff !important;
+    background-color: #FF501F !important;
+    border-color: #FF501F !important;
+    cursor: pointer;
+}
+
+.btn-psychic {
+    color: #fff !important;
+    background-color: #A65E9A !important;
+    border-color: #A65E9A !important;
+    cursor: pointer;
+}
+
+.btn-colorless {
+    color: #000 !important;
+    background-color: #E5D6D0 !important;
+    border-color: #E5D6D0 !important;
+    cursor: pointer;
+}
+
+.btn-darkness {
+    color: #fff !important;
+    background-color: #2C2E2B !important;
+    border-color: #2C2E2B !important;
+    cursor: pointer;
+}
+
+.btn-metal {
+    color: #fff !important;
+    background-color: #C6A114 !important;
+    border-color: #C6A114 !important;
+    cursor: pointer;
+}
+
+.btn-fairy {
+    color: #fff !important;
+    background-color: #E03A83 !important;
+    border-color: #E03A83 !important;
+    cursor: pointer;
+}
+
+.btn-default {
+    color: #fff !important;
+    background-color: #7f8c8d !important;
+    border-color: #7f8c8d !important;
+    cursor: pointer;
+}

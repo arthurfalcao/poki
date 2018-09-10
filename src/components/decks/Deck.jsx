@@ -1,18 +1,28 @@
 import React from "react";
-import { Link } from 'react-router-dom';
 
-export default ({deck, deleteFromDeck=() => {}}) => (
+import './Deck.css';
+import DeckCard from "./DeckCard";
+import DeckTitle from "./DeckTitle";
+import DeckButton from "./DeckButton";
+
+const Deck = ({ deck, deleteFromDeck=() => {}, onSave=() => {}, details, isSaved }) => (
   <div className="card">
-    <ul className="list-group list-group-flush">
-      {
-        deck.map(card =>
-          <li className="list-group-item" key={card.idCard}>
-            <a onClick={deleteFromDeck.bind(null, card.idCard)}>
-              {card.name}
-            </a>
-          </li>
-        )
-      }
-    </ul>
+    <div className="card-header text-center">
+      <DeckTitle value={ deck.name } />
+    </div>
+    <div className="card-body p-0">
+      <div className="list-group">
+        {
+          deck.cards.map(card =>
+            <DeckCard { ...card } deleteFromDeck={ deleteFromDeck.bind(null, card.idCard) } />
+          )
+        }
+      </div>
+    </div>
+    <div className="card-footer text-center">
+      <DeckButton details={ details } idDeck={ deck.idDeck } onSave={ onSave } isSaved={ isSaved } />
+    </div>
   </div>
 );
+
+export default Deck;

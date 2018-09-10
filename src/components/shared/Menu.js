@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { app, base } from '../../config/config';
+import { app } from '../../config/config';
 
 class Menu extends Component {
     constructor(props) {
@@ -35,7 +35,7 @@ class Menu extends Component {
                 <div className="container">
                     <Link to="/" className="navbar-brand">Poki</Link>
                     
-                    <div className="collapse navbar-collapse" id="navbarPoki">
+                    {/* <div className="collapse navbar-collapse" id="navbarPoki">
                         {
                             this.props.authenticated
                             ? (
@@ -51,7 +51,7 @@ class Menu extends Component {
                             </ul>
                             )
                         }
-                    </div>
+                    </div> */}
                 </div>
 
             </nav>
