@@ -12,7 +12,7 @@ class Decks extends React.Component {
   }
 
   componentWillMount() {
-    localStorage.getItem('deck') && this.setState({
+    localStorage.getItem('decks') && this.setState({
       decks: JSON.parse(localStorage.getItem('decks'))
     })
   }
@@ -38,14 +38,14 @@ class Decks extends React.Component {
               <div className="row">
                 {
                   decks.map(deck =>
-                    <div className="col-3">
-                      <Link to={"deck/"+ deck.deck.idDeck } className="btn btn-dark">
+                    <div className="col-3 pb-3">
+                      <Link to={"deck/"+ deck.idDeck } className="btn btn-dark btn-block">
                         <div>
                           <div className="card-header">
-                            { deck.deck.name }
+                            { deck.name }
                           </div>
                           <div className="card-footer">
-                            <p className="mb-0">Modificado: { deck.deck.date }</p>
+                            <p className="mb-0">Modificado: { deck.date }</p>
                           </div>
                         </div>
                       </Link>

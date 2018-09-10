@@ -17,17 +17,14 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    //this.app = firebase.initializeApp(DB_CONFIG);
-    //this.db = this.app.database().ref().child('cards');
-
     this.state = {
       cards: [],
-      deck: [{
+      deck: {
           idDeck: uuid.v4(),
           name: 'My Deck',
           cards: [],
           details: false
-        }],
+        },
       decks: [],
       showDeck: false,
       isSaved: false
@@ -67,25 +64,27 @@ class App extends React.Component {
   
   componentWillUpdate = (nextProps, nextState) => {
     localStorage.setItem('deckTemp', JSON.stringify(nextState.deck));
+    localStorage.setItem('deck', JSON.stringify(nextState.deck));
     localStorage.setItem('decks', JSON.stringify(nextState.decks));
     localStorage.setItem('deckDate', Date().toString().split(' ').splice(1,3).join(' '));
   }
 
   onSave = () => {
-    localStorage.setItem('deck', JSON.stringify(this.state.deck));
     this.setState({
-      isSaved: true
+      decks: this.state.decks.concat([
+        this.state.deck
+      ]),
+      isSaved: true,
+      deck: {
+        idDeck: uuid.v4(),
+        name: 'My New Deck',
+        cards: [],
+        details: false
+      },
+      showDeck: false
     });
   }
-
-  addNewDeck = (deck) => {
-    this.setState({
-      decks: this.state.decks.concat([{
-        deck: deck
-      }])
-    })
-  }
-
+  
   addToDeck = (id, name, imageUrl, type, superType) => {
     if (superType == "Pokémon") {
       types.forEach(types => {
@@ -173,10 +172,7 @@ class App extends React.Component {
         <section className="container py-5">
           <div className="row justify-content-center">
             <div className="col-4 text-center">
-              <div className="btn-group" role="group">
-                <button onClick={() => this.addNewDeck(deck) } className="btn btn-primary">Criar novo Deck</button>
-                <Link to="/decks" className="btn btn-primary">Todos os Decks</Link>
-              </div>
+              <Link to="/decks" className="btn btn-primary">Todos os Decks</Link>
             </div>
           </div>
         </section>
@@ -198,7 +194,7 @@ class App extends React.Component {
                 }
               </div>
             </div>
-            <div className="col-2 offset-1">
+            <div className="col-3">
               {
                 showDeck &&
                 <Deck 

@@ -9,20 +9,38 @@ class DeckDetails extends React.Component {
     this.idDeck = props.match.params.id;
 
     this.state = {
-      deck: [],
-      details: true
+      deck: {},
+      decks: [],
+      details: true,
+      hasDeck: false
     }
   }
 
   componentWillMount() {
-    localStorage.getItem('deck') && this.setState({
-      deck: JSON.parse(localStorage.getItem('deck'))
+    localStorage.getItem('decks') && this.setState({
+      decks: JSON.parse(localStorage.getItem('decks'))
+    });
+  }
+
+  componentDidMount() {
+    this.state.decks.forEach(deck => {
+      if (deck.idDeck == this.idDeck) {
+        this.setState({
+          deck: deck,
+          hasDeck: true
+        })
+      }
     })
   }
 
-  render() {
-    const { deck, details } = this.state;
+  componentWillUpdate = (nextProps, nextState) => {
+    localStorage.setItem('deckTemp', JSON.stringify(nextState.deck));
+    localStorage.setItem('deckDate', Date().toString().split(' ').splice(1,3).join(' '));
+  }
 
+  render() {
+    const { deck, details, hasDeck } = this.state;
+    
     return(
       <div>
         <Menu />
@@ -39,14 +57,15 @@ class DeckDetails extends React.Component {
             <div className="col-12 col-lg-8 offset-1">
               <div className="row">
                 {
-                  deck.cards.map(card =>
-                    <Card addToDeck={ this.addToDeck } { ...card } details={ details } />
-                  )
+                  hasDeck &&
+                    deck.cards.map(card =>
+                      <Card addToDeck={ this.addToDeck } { ...card } details={ details } />
+                    )
                 }
               </div>
             </div>
-            <div className="col-12 col-lg-2">
-              <Deck details={ details } deck={ deck } />
+            <div className="col-12 col-lg-3">
+              {/* <Deck details={ details } deck={ deck } /> */}
             </div>
           </div>
         </section>
