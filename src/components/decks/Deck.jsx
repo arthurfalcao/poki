@@ -14,7 +14,7 @@ const Deck = ({ deck, deleteFromDeck=() => {}, onSave=() => {}, details, isSaved
       <div className="list-group">
         {
           deck.cards.map(card =>
-            <DeckCard { ...card } deleteFromDeck={ deleteFromDeck.bind(null, card.idCard) } />
+            <DeckCard key={card.idCard} { ...card } deleteFromDeck={ deleteFromDeck.bind(null, card.idCard) } />
           )
         }
       </div>

@@ -7,7 +7,7 @@ export default ({ details, addToDeck, ...card }) => {
   }
 
   return(
-    <div className="col-6 col-sm-4 col-lg-2 pt-5 text-center" key={ card.id }>
+    <div className="col-6 col-sm-4 col-lg-2 pt-5 text-center">
       <Link to={"/card/"+card.id}>
         <img className="img-fluid img-cards" alt={ card.name } src={ card.imageUrl }/>
       </Link>
@@ -18,7 +18,7 @@ export default ({ details, addToDeck, ...card }) => {
 
 const Card = ({ addToDeck = () => {}, ...card }) => {
   return(
-    <div className="col-6 col-sm-4 col-lg-3 pt-5 text-center" key={ card.id }>
+    <div className="col-6 col-sm-4 col-lg-3 pt-5 text-center">
       <div onClick={() => addToDeck(card.id, card.name, card.imageUrl, card.types, card.supertype )} className="card-click">
         <img className="img-fluid img-cards" alt={ card.name } src={ card.imageUrl } />
       </div>

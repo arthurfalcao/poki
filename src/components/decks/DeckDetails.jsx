@@ -1,6 +1,5 @@
 import React from 'react';
 import Menu from '../shared/Menu';
-import Deck from './Deck';
 import Card from '../cards/Card';
 
 class DeckDetails extends React.Component {
@@ -24,7 +23,7 @@ class DeckDetails extends React.Component {
 
   componentDidMount() {
     this.state.decks.forEach(deck => {
-      if (deck.idDeck == this.idDeck) {
+      if (deck.idDeck === this.idDeck) {
         this.setState({
           deck: deck,
           hasDeck: true

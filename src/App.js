@@ -86,9 +86,9 @@ class App extends React.Component {
   }
   
   addToDeck = (id, name, imageUrl, type, superType) => {
-    if (superType == "Pokémon") {
+    if (superType === "Pokémon") {
       types.forEach(types => {
-        if (types.name == type) {
+        if (types.name === type) {
           this.setState(prevState => ({
             ...prevState,
             deck: {
@@ -189,7 +189,7 @@ class App extends React.Component {
               <div className="row justify-content-center">
                 {
                   cards.map(card =>
-                    <Card addToDeck={ this.addToDeck } { ...card } />
+                    <Card key={card.id} addToDeck={ this.addToDeck } { ...card } />
                   )
                 }
               </div>

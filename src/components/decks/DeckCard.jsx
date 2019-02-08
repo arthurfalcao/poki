@@ -1,9 +1,9 @@
 import React from 'react';
 
 this.superType = (superType) => {
-  if (superType == "Trainer") {
+  if (superType === "Trainer") {
     return "T";
-  } else if (superType == "Energy") {
+  } else if (superType === "Energy") {
     return "E"
   }
 }
@@ -14,9 +14,10 @@ export default ({ deleteFromDeck = () => {}, ...card, }) => {
   }
 
   return (
-    <button key={ card.idCard } 
-            className="list-group-item d-flex justify-content-between align-items-center font-weight-bold btn-default" 
-            onClick={ deleteFromDeck }>
+    <button 
+        className="list-group-item d-flex justify-content-between align-items-center font-weight-bold btn-default" 
+        onClick={ deleteFromDeck }
+    >
       { card.name }
       <span className="badge badge-pill badge-light float-left">
         <h6 className="font-weight-bold mb-0 px-1">{ this.superType(card.superType) }</h6>
@@ -26,7 +27,7 @@ export default ({ deleteFromDeck = () => {}, ...card, }) => {
 }
 
 const Icon = ({ deleteFromDeck = () => {}, ...card }) => (
-  <button key={ card.idCard } 
+  <button 
           className={`list-group-item d-flex justify-content-between align-items-center font-weight-bold ${ card.button }`} 
           onClick={ deleteFromDeck }>
     { card.name } 
