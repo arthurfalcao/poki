@@ -1,27 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import registerServiceWorker from './registerServiceWorker';
-import Login from './components/login/Login';
-import CardDetails from './components/cards/CardDetails';
-import Register from './components/register/Register';
-import DeckDetails from './components/decks/DeckDetails';
-import Decks from './components/decks/Decks';
+import './index.css';
 
-ReactDOM.render(
-    <BrowserRouter>
-        <Switch>
-            <Route exact path="/" component={App} />
-            <Route path="/login" component={Login} />
-            <Route path="/register" component={Register} />
-            <Route path="/card/:id" component={CardDetails} />
-            <Route path="/deck/:id" component={DeckDetails} />
-            <Route path="/decks" component={Decks} />
-            <Route path="*" component={App} />
-        </Switch>
-    </BrowserRouter>,
-    document.getElementById('root')
-);
-registerServiceWorker();
+ReactDOM.render(<App />, document.getElementById('root'));
+
+if (module.hot) {
+  module.hot.accept();
+}

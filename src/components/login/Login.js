@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Menu from '../shared/Menu';
 
 import './Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAt, faLock } from '@fortawesome/free-solid-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAt, faLock } from '@fortawesome/free-solid-svg-icons';
 import { Redirect } from 'react-router-dom';
-import { Toaster, Intent } from '@blueprintjs/core';
+import Menu from '../shared/Menu';
 
 import { app, facebookProvider } from '../../config/config';
 
-library.add(faAt, faLock)
+library.add(faAt, faLock);
 
 class Login extends Component {
   constructor(props) {
@@ -22,82 +21,125 @@ class Login extends Component {
     this.authWithEmailPassword = this.authWithEmailPassword.bind(this);
 
     this.state = {
-      redirect: false
-    }
+      redirect: false,
+    };
   }
 
   authWithFacebook() {
-    app.auth().signInWithPopup(facebookProvider)
+    app
+      .auth()
+      .signInWithPopup(facebookProvider)
       .then((result, error) => {
         if (error) {
-          this.toaster.show({ intent: Intent.DANGER, message: "Unable to sign in with Facebook" })
+          this.toaster.show({
+            message: 'Unable to sign in with Facebook',
+          });
         } else {
           this.setState({ redirect: true });
         }
-      })
+      });
   }
 
   authWithEmailPassword(event) {
     event.preventDefault();
-    console.log("Autenticado com o Email");
-    console.table([{
-      email: this.emailInput.value,
-      password: this.passwordInput.value
-    }])
+    console.log('Autenticado com o Email');
+    console.table([
+      {
+        email: this.emailInput.value,
+        password: this.passwordInput.value,
+      },
+    ]);
   }
 
   render() {
     if (this.state.redirect === true) {
-      return <Redirect to ='/' />
+      return <Redirect to="/" />;
     }
 
     return (
       <div>
-        <Menu></Menu>
+        <Menu />
         <section className="container pt-5">
-          <Toaster ref={(element) => { this.toaster = element }} />
           <div className="row justify-content-center">
-            <div className="col-12 col-sm-8 text-center"> 
+            <div className="col-12 col-sm-8 text-center">
               <h1 className="text-info">Poki</h1>
               <p>Caso você seja cadastrado entre com seus dados.</p>
             </div>
             <div className="col-12 col-sm-6">
               <div className="card">
-                <header className="card-header">
-                  Digite o Email e Senha
-                </header>
+                <header className="card-header">Digite o Email e Senha</header>
                 <main className="card-body">
-                  <form onSubmit={(event) => { this.authWithEmailPassword(event) }} ref={(form) => { this.loginForm = form }}>
+                  <form
+                    onSubmit={event => {
+                      this.authWithEmailPassword(event);
+                    }}
+                    ref={form => {
+                      this.loginForm = form;
+                    }}
+                  >
                     <div className="form-group input-group">
-                      <label for="email" className="sr-only">Email</label>
+                      <label htmlFor="email" className="sr-only">
+                        Email
+                      </label>
                       <div className="input-group mb-2">
                         <div className="input-group-prepend">
                           <span className="input-group-text">
                             <FontAwesomeIcon icon="at" />
                           </span>
                         </div>
-                        <input type="email" className="form-control" id="email" name="email" placeholder="Email" ref={(input) => { this.emailInput = input }} />
+                        <input
+                          type="email"
+                          className="form-control"
+                          id="email"
+                          name="email"
+                          placeholder="Email"
+                          ref={input => {
+                            this.emailInput = input;
+                          }}
+                        />
                       </div>
                     </div>
                     <div className="form-group input-group">
-                      <label for="senha" className="sr-only">Senha</label>
+                      <label htmlFor="senha" className="sr-only">
+                        Senha
+                      </label>
                       <div className="input-group mb-2">
                         <div className="input-group-prepend">
                           <span className="input-group-text">
                             <FontAwesomeIcon icon="lock" />
                           </span>
                         </div>
-                        <input type="password" className="form-control" id="senha" name="password" placeholder="Senha" ref={(input) => { this.passwordInput = input }} />
+                        <input
+                          type="password"
+                          className="form-control"
+                          id="senha"
+                          name="password"
+                          placeholder="Senha"
+                          ref={input => {
+                            this.passwordInput = input;
+                          }}
+                        />
                       </div>
                     </div>
-                    <button type="submit" className="btn btn-danger">Entrar</button>
+                    <button type="submit" className="btn btn-danger">
+                      Entrar
+                    </button>
                     <a className="float-right">Esqueceu a senha?</a>
-                    <hr/>
+                    <hr />
                     <div className="text-center">
-                      <button className="btn btn-info" onClick={() => { this.authWithFacebook() }}>Entre com o Facebook</button>
+                      <button
+                        className="btn btn-info"
+                        onClick={() => {
+                          this.authWithFacebook();
+                        }}
+                      >
+                        Entre com o Facebook
+                      </button>
                     </div>
-                    <hr/>
-                    <span>Não tem cadastro? <Link to="/register">Clique aqui</Link></span>
+                    <hr />
+                    <span>
+                      Não tem cadastro? <Link to="/register">Clique aqui</Link>
+                    </span>
                   </form>
                 </main>
               </div>
