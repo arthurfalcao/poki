@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
 import uuid from 'uuid';
+import { getCards } from '../../services/card-service';
 import Deck from '../../components/decks/Deck';
 import Card from '../../components/cards/Card';
 import Menu from '../../components/shared/Menu';
@@ -10,7 +10,74 @@ import Footer from '../../components/shared/Footer';
 import '../../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API = 'https://api.pokemontcg.io/v1/cards?pageSize=60';
+const types = [
+  {
+    name: 'Grass',
+    button: 'btn-grass',
+    icon:
+      '//cdn.bulbagarden.net/upload/thumb/2/2e/Grass-attack.png/20px-Grass-attack.png',
+  },
+  {
+    name: 'Fire',
+    button: 'btn-fire',
+    icon:
+      '//cdn.bulbagarden.net/upload/thumb/a/ad/Fire-attack.png/20px-Fire-attack.png',
+  },
+  {
+    name: 'Water',
+    button: 'btn-water',
+    icon:
+      '//cdn.bulbagarden.net/upload/thumb/1/11/Water-attack.png/20px-Water-attack.png',
+  },
+  {
+    name: 'Lightning',
+    button: 'btn-lightning',
+    icon:
+      '//cdn.bulbagarden.net/upload/thumb/0/04/Lightning-attack.png/20px-Lightning-attack.png',
+  },
+  {
+    name: 'Fighting',
+    button: 'btn-fighting',
+    icon:
+      '//cdn.bulbagarden.net/upload/thumb/4/48/Fighting-attack.png/20px-Fighting-attack.png',
+  },
+  {
+    name: 'Psychic',
+    button: 'btn-psychic',
+    icon:
+      '//cdn.bulbagarden.net/upload/thumb/e/ef/Psychic-attack.png/20px-Psychic-attack.png',
+  },
+  {
+    name: 'Colorless',
+    button: 'btn-colorless',
+    icon:
+      '//cdn.bulbagarden.net/upload/thumb/1/1d/Colorless-attack.png/20px-Colorless-attack.png',
+  },
+  {
+    name: 'Darkness',
+    button: 'btn-darkness',
+    icon:
+      '//cdn.bulbagarden.net/upload/thumb/a/ab/Darkness-attack.png/20px-Darkness-attack.png',
+  },
+  {
+    name: 'Metal',
+    button: 'btn-metal',
+    icon:
+      '//cdn.bulbagarden.net/upload/thumb/6/64/Metal-attack.png/20px-Metal-attack.png',
+  },
+  {
+    name: 'Dragon',
+    button: 'btn-dragon',
+    icon:
+      '//cdn.bulbagarden.net/upload/thumb/8/8a/Dragon-attack.png/20px-Dragon-attack.png',
+  },
+  {
+    name: 'Fairy',
+    button: 'btn-fairy',
+    icon:
+      '//cdn.bulbagarden.net/upload/thumb/4/40/Fairy-attack.png/20px-Fairy-attack.png',
+  },
+];
 
 class App extends React.Component {
   constructor(props) {
@@ -31,13 +98,14 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    localStorage.getItem('deck') &&
+    if (localStorage.getItem('deck')) {
       this.setState({
         deck: JSON.parse(localStorage.getItem('deck')),
         decks: JSON.parse(localStorage.getItem('decks')),
         showDeck: true,
         isSaved: true,
       });
+    }
     this.setState(prevState => ({
       ...prevState,
       deck: {
@@ -48,14 +116,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchCards();
-  }
-
-  fetchCards() {
-    fetch(API)
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ cards: data.cards.sort(() => 0.5 - Math.random()) });
+    const pageSize = 10;
+    getCards(pageSize)
+      .then(res => {
+        const { data } = res;
+        this.setState({
+          cards: data.cards.sort(() => 0.5 - Math.random()),
+        });
       })
       .catch(err => {
         console.log(err);
@@ -77,8 +144,9 @@ class App extends React.Component {
   };
 
   onSave = () => {
+    const { decks, deck } = this.state;
     this.setState({
-      decks: this.state.decks.concat([this.state.deck]),
+      decks: decks.concat([deck]),
       isSaved: true,
       deck: {
         idDeck: uuid.v4(),
@@ -91,23 +159,25 @@ class App extends React.Component {
   };
 
   addToDeck = (id, name, imageUrl, type, superType) => {
+    const { deck } = this.state;
+
     if (superType === 'Pokémon') {
-      types.forEach(types => {
-        if (types.name === type) {
+      types.forEach(item => {
+        if (item.name === type) {
           this.setState(prevState => ({
             ...prevState,
             deck: {
               ...prevState.deck,
-              cards: this.state.deck.cards.concat([
+              cards: deck.cards.concat([
                 {
                   idCard: uuid.v4(),
                   id,
                   name,
                   imageUrl,
                   superType,
-                  type: types.type,
-                  icon: types.icon,
-                  button: types.button,
+                  type: item.type,
+                  icon: item.icon,
+                  button: item.button,
                   hasIcon: true,
                 },
               ]),
@@ -120,7 +190,7 @@ class App extends React.Component {
         ...prevState,
         deck: {
           ...prevState.deck,
-          cards: this.state.deck.cards.concat([
+          cards: deck.cards.concat([
             {
               idCard: uuid.v4(),
               id,
@@ -139,6 +209,7 @@ class App extends React.Component {
   };
 
   deleteFromDeck = (id, e) => {
+    const { deck } = this.state;
     // evita editar
     e.stopPropagation();
 
@@ -146,7 +217,7 @@ class App extends React.Component {
       ...prevState,
       deck: {
         ...prevState.deck,
-        cards: this.state.deck.cards.filter(card => card.idCard !== id),
+        cards: deck.cards.filter(card => card.idCard !== id),
       },
     }));
 
@@ -218,74 +289,5 @@ class App extends React.Component {
     );
   }
 }
-
-const types = [
-  {
-    name: 'Grass',
-    button: 'btn-grass',
-    icon:
-      '//cdn.bulbagarden.net/upload/thumb/2/2e/Grass-attack.png/20px-Grass-attack.png',
-  },
-  {
-    name: 'Fire',
-    button: 'btn-fire',
-    icon:
-      '//cdn.bulbagarden.net/upload/thumb/a/ad/Fire-attack.png/20px-Fire-attack.png',
-  },
-  {
-    name: 'Water',
-    button: 'btn-water',
-    icon:
-      '//cdn.bulbagarden.net/upload/thumb/1/11/Water-attack.png/20px-Water-attack.png',
-  },
-  {
-    name: 'Lightning',
-    button: 'btn-lightning',
-    icon:
-      '//cdn.bulbagarden.net/upload/thumb/0/04/Lightning-attack.png/20px-Lightning-attack.png',
-  },
-  {
-    name: 'Fighting',
-    button: 'btn-fighting',
-    icon:
-      '//cdn.bulbagarden.net/upload/thumb/4/48/Fighting-attack.png/20px-Fighting-attack.png',
-  },
-  {
-    name: 'Psychic',
-    button: 'btn-psychic',
-    icon:
-      '//cdn.bulbagarden.net/upload/thumb/e/ef/Psychic-attack.png/20px-Psychic-attack.png',
-  },
-  {
-    name: 'Colorless',
-    button: 'btn-colorless',
-    icon:
-      '//cdn.bulbagarden.net/upload/thumb/1/1d/Colorless-attack.png/20px-Colorless-attack.png',
-  },
-  {
-    name: 'Darkness',
-    button: 'btn-darkness',
-    icon:
-      '//cdn.bulbagarden.net/upload/thumb/a/ab/Darkness-attack.png/20px-Darkness-attack.png',
-  },
-  {
-    name: 'Metal',
-    button: 'btn-metal',
-    icon:
-      '//cdn.bulbagarden.net/upload/thumb/6/64/Metal-attack.png/20px-Metal-attack.png',
-  },
-  {
-    name: 'Dragon',
-    button: 'btn-dragon',
-    icon:
-      '//cdn.bulbagarden.net/upload/thumb/8/8a/Dragon-attack.png/20px-Dragon-attack.png',
-  },
-  {
-    name: 'Fairy',
-    button: 'btn-fairy',
-    icon:
-      '//cdn.bulbagarden.net/upload/thumb/4/40/Fairy-attack.png/20px-Fairy-attack.png',
-  },
-];
 
 export default App;

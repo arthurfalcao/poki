@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-
-import './Login.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link, Redirect } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAt, faLock } from '@fortawesome/free-solid-svg-icons';
-import { Redirect } from 'react-router-dom';
 import Menu from '../shared/Menu';
+
+import './Login.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { app, facebookProvider } from '../../config/config';
 
@@ -124,10 +123,11 @@ class Login extends Component {
                     <button type="submit" className="btn btn-danger">
                       Entrar
                     </button>
-                    <a className="float-right">Esqueceu a senha?</a>
+                    <span className="float-right">Esqueceu a senha?</span>
                     <hr />
                     <div className="text-center">
                       <button
+                        type="button"
                         className="btn btn-info"
                         onClick={() => {
                           this.authWithFacebook();

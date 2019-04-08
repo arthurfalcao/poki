@@ -1,10 +1,10 @@
 import React from 'react';
 
-this.superType = superType => {
-  if (superType === 'Trainer') {
+const superType = type => {
+  if (type === 'Trainer') {
     return 'T';
   }
-  if (superType === 'Energy') {
+  if (type === 'Energy') {
     return 'E';
   }
 
@@ -18,13 +18,14 @@ export default ({ deleteFromDeck = () => {}, ...card }) => {
 
   return (
     <button
+      type="button"
       className="list-group-item d-flex justify-content-between align-items-center font-weight-bold btn-default"
       onClick={deleteFromDeck}
     >
       {card.name}
       <span className="badge badge-pill badge-light float-left">
         <h6 className="font-weight-bold mb-0 px-1">
-          {this.superType(card.superType)}
+          {superType(card.superType)}
         </h6>
       </span>
     </button>
@@ -33,6 +34,7 @@ export default ({ deleteFromDeck = () => {}, ...card }) => {
 
 const Icon = ({ deleteFromDeck = () => {}, ...card }) => (
   <button
+    type="button"
     className={`list-group-item d-flex justify-content-between align-items-center font-weight-bold ${
       card.button
     }`}
